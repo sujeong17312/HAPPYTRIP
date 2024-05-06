@@ -1,0 +1,37 @@
+<!Doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>마이페이지</title>
+
+    <!--  CSS-->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!--  JS-->
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <style>
+        .centered {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .custom-btn {
+            width: 200px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+<nav th:replace="~{navbar :: navbarFragment}"></nav>
+<div class="container centered">
+    <h1 class="mt-5 mb-4">마이페이지</h1>
+
+    <button class="btn btn-outline-primary custom-btn btn-lg" type = "button" th:onclick="|location.href='/mypage/update'|">회원정보 수정</button>
+    <button class="btn btn-outline-danger custom-btn btn-lg" type = "button" th:onclick="|location.href='/mypage/deleteCheck'|">회원탈퇴</button>
+    <button class="btn btn-outline-primary custom-btn btn-lg" type = "button" th:onclick="|location.href='/mypage/reservation'|">예약 내역</button>
+</div>
+</body>
+</html>

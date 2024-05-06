@@ -1,0 +1,24 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<header class="py-3 mb-4 border-bottom">
+<nav th:fragment="navbarFragment" class="navbar navbar-light" style="background-color: #e3f2fd;">
+    <div class="container d-flex flex-wrap justify-content-center">
+        <a th:href="@{/home}" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto link-body-emphasis text-decoration-none">
+            <span class="fs-4">HappyTrip</span>
+        </a>
+        <ul class="nav me-auto">
+            <li class="nav-item"><a th:href="@{/admin/members}" class="nav-link link-body-emphasis px-2">회원 관리</a></li>
+            <li class="nav-item"><a th:href="@{/admin/booking}" class="nav-link link-body-emphasis px-2">예약 관리</a></li>
+            <li class="nav-item"><a th:href="@{/admin/board}" class="nav-link link-body-emphasis px-2">게시판 관리</a></li>
+            <li class="nav-item"><a th:href="@{/admin/notice/list}" class="nav-link link-body-emphasis px-2">공지 관리</a></li>
+
+        </ul>
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link link-body-emphasis px-2" sec:authorize="isAnonymous()" th:href="@{/member/login}">Login</a>
+                <a class="nav-link link-body-emphasis px-2" sec:authorize="isAuthenticated()" th:href="@{/member/logout}">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+</header>
+</html>

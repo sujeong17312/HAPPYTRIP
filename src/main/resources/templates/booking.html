@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>항공권 조회</title>
+
+    <!--  CSS-->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!--  JS-->
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<nav th:replace="~{navbar :: navbarFragment}"></nav>
+<div class="container">
+    <h2 class="text-center mt-5">항공권 조회</h2>
+    <form id="flightForm" th:action="@{/booking/submitFlights}" method="POST">
+        <table class="table table-bordered mt-4">
+            <thead class="thead-light">
+            <tr>
+                <th>항공사</th>
+                <th>출발지</th>
+                <th>도착지</th>
+                <th>출발일시</th>
+                <th>도착일시</th>
+                <th>소요시간</th>
+                <th>이코노미가격</th>
+                <th>항공편명</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${itemList1}">
+                <td th:text="${item.airlineNm}"></td>
+                <td th:text="${item.depAirportNm}"></td>
+                <td th:text="${item.arrAirportNm}"></td>
+                <td th:text="${#temporals.format(item.deplocalDateTime, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${#temporals.format(item.arrlocalDateTime, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${item.duration}"></td>
+                <td th:text="${item.economyCharge}"></td>
+                <td th:text="${item.vihicleId}"></td>
+                <td><input type="radio" name="flight1" value="[[${itemList1.index}]]" onclick="calculatePrice()"
+                           th:attr="data-airline=${item.airlineNm},
+                        data-departure=${item.depAirportNm},
+                        data-arrival=${item.arrAirportNm},
+                        data-departure-time=${item.depPlandTime},
+                        data-arrival-time=${item.arrPlandTime},
+                        data-duration=${item.duration},
+                        data-price=${item.economyCharge},
+                        data-flight-number=${item.vihicleId}"
+                           ></td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+<div class="container">
+    <form  id="returnFlightForm" action="/booking/submitFlights" method="POST">
+        <table th:if="${tripType == '왕복'}" class="table table-bordered mt-4">
+            <thead class="thead-light">
+                <tr>
+                    <th>항공사</th>
+                    <th>출발지</th>
+                    <th>도착지</th>
+                    <th>출발시간</th>
+                    <th>도착시간</th>
+                    <th>소요시간</th>
+                    <th>이코노미가격</th>
+                    <th>항공편명</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${itemList2}">
+                    <td th:text="${item.airlineNm}"></td>
+                    <td th:text="${item.depAirportNm}"></td>
+                    <td th:text="${item.arrAirportNm}"></td>
+                    <td th:text="${#temporals.format(item.deplocalDateTime, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:text="${#temporals.format(item.arrlocalDateTime, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:text="${item.duration}"></td>
+                    <td th:text="${item.economyCharge}"></td>
+                    <td th:text="${item.vihicleId}"></td>
+                    <td><input type="radio" name="flight2" value="[[${itemList2.index}]]" onclick= "calculatePrice()"
+                               th:attr="data-airline=${item.airlineNm},
+                        data-departure=${item.depAirportNm},
+                        data-arrival=${item.arrAirportNm},
+                        data-departure-time=${item.depPlandTime},
+                        data-arrival-time=${item.arrPlandTime},
+                        data-duration=${item.duration},
+                        data-price=${item.economyCharge},
+                        data-flight-number=${item.vihicleId}"></td>
+                </tr>
+            <!-- 추가적인 항공권 정보를 동적으로 추가할 수 있습니다. -->
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<div class="container">
+<span>예상가격: </span>
+<span class="text-center" id="expectedPrice"></span>
+    <button type="submit" class="btn btn-primary" onclick="SelectedSubmit()">예약하기</button>
+</div>
+
+    <!-- 숨겨진 필드(hidden field)로 선택된 항공편 정보를 전달할 준비 -->
+<input type="hidden" id="selectedFlights1" name="selectedFlights1">
+<input type="hidden" id="selectedFlights2" name="selectedFlights2">
+
+<script>
+
+    function SelectedSubmit(){
+
+
+
+        var selectedFlights1 =[];
+        var selectedFlights2 =[];
+
+        var flightRadios=document.getElementsByName('flight1');
+        var returnFlightRadios=document.getElementsByName('flight2');
+        var passenger = parseInt([[${itemList1.get(0).passenger}]]);
+
+
+
+
+        for(var i=0; i<flightRadios.length; i++){
+            if(flightRadios[i].checked){
+                selectedFlights1.push({
+                    airline: flightRadios[i].getAttribute('data-airline'),
+                    departure: flightRadios[i].getAttribute('data-departure'),
+                    arrival: flightRadios[i].getAttribute('data-arrival'),
+                    departureTime: flightRadios[i].getAttribute('data-departure-time'),
+                    arrivalTime: flightRadios[i].getAttribute('data-arrival-time'),
+                    duration: flightRadios[i].getAttribute('data-duration'),
+                    price: flightRadios[i].getAttribute('data-price'),
+                    flightNumber: flightRadios[i].getAttribute('data-flight-number')
+                });
+                break;
+            }
+        }
+
+        for (var i = 0; i < returnFlightRadios.length; i++) {
+            if (returnFlightRadios[i].checked) {
+                selectedFlights2.push({
+                    airline: returnFlightRadios[i].getAttribute('data-airline'),
+                    departure: returnFlightRadios[i].getAttribute('data-departure'),
+                    arrival: returnFlightRadios[i].getAttribute('data-arrival'),
+                    departureTime: returnFlightRadios[i].getAttribute('data-departure-time'),
+                    arrivalTime: returnFlightRadios[i].getAttribute('data-arrival-time'),
+                    duration: returnFlightRadios[i].getAttribute('data-duration'),
+                    price: returnFlightRadios[i].getAttribute('data-price'),
+                    flightNumber: returnFlightRadios[i].getAttribute('data-flight-number')
+                });
+                break;
+            }
+        }
+
+
+        console.log("Selected Flights 1: ", selectedFlights1);
+        console.log("Selected Flights 2: ", selectedFlights2);
+        console.log(passenger);
+
+
+
+        console.log(JSON.stringify(selectedFlights1));
+
+
+
+
+
+
+        $.ajax({
+            url: "/booking/submitFlights",
+            type: "Post",
+            contentType: "application/json",
+            data: JSON.stringify({
+                selectedFlights1: selectedFlights1,
+                selectedFlights2: selectedFlights2,
+                passenger: passenger
+            }),
+            success: function(response) {
+                // 서버로부터의 응답 처리
+
+                   window.location.href = "/booking/pay"; // 이동할 페이지 URL에 맞게 변경해야 함
+
+
+
+            },
+            error: function(xhr, status, error) {
+                console.error("Ajax 요청 실패: ", error);
+            }
+        });
+
+    }
+
+    function calculatePrice() {
+        var selectedFlightPrice = 0;
+
+        // 첫 번째 항공권 선택 여부 확인
+        var flightRadios = document.getElementsByName('flight1');
+        for(var i = 0; i < flightRadios.length; i++) {
+            if(flightRadios[i].checked) {
+                selectedFlightPrice += parseInt(flightRadios[i].getAttribute('data-price'));
+                break;
+            }
+        }
+
+        // 두 번째 항공권 선택 여부 확인
+        var returnFlightRadios = document.getElementsByName('flight2');
+        for(var i = 0; i < returnFlightRadios.length; i++) {
+            if(returnFlightRadios[i].checked) {
+                selectedFlightPrice += parseInt(returnFlightRadios[i].getAttribute('data-price'));
+                break;
+            }
+        }
+
+        var passenger = parseInt("[[${itemList1.get(0).passenger}]]");
+        var totalPrice = selectedFlightPrice * passenger;
+
+        var priceElement = document.getElementById('expectedPrice');
+        priceElement.textContent = totalPrice.toLocaleString() + '원';
+    }
+</script>
+
+
+</body>
+</html>

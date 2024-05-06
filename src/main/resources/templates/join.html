@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>회원가입</title>
+
+  <!--CSS-->
+  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+  <link th:href="@{/css/join.css}" rel="stylesheet" />
+
+  <!--JS-->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</head>
+<body class="bg-body-tertiary">
+<div class="container">
+  <main>
+    <div class="py-3 text-center">
+      <h3>회원가입</h3>
+    </div>
+
+    <form th:action="@{/member/join}" method="post" th:object="${memberForm}" >
+      <div class="row g-3">
+        <div class="col-12">
+          <label for="name" class="form-label">이름</label>
+          <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  placeholder="이름"
+                  th:field="*{name}"
+                  required
+          />
+        </div>
+
+        <div class="col-12">
+          <label for="id" class="form-label">아이디</label>
+          <div class="input-group">
+            <input type="text"
+                   class="form-control"
+                   id="id"
+                   placeholder="아이디"
+                   th:field="*{id}"
+                   required />
+            <button class="btn btn-primary" type="button" onclick="idCheck()">중복확인</button>
+          </div>
+          <div id="idErrorMessage" class="text-danger" style="display: none;">중복된 아이디입니다.</div>
+        </div>
+
+        <div class="col-12">
+          <label for="password" class="form-label">비밀번호</label>
+          <input
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  placeholder="비밀번호"
+                  th:field="*{password}"
+                  required
+                  onblur="checkpw()"
+          />
+        </div>
+
+        <div class="col-12">
+          <label for="checkpassword" class="form-label">비밀번호 확인</label>
+          <input
+                  type="password"
+                  class="form-control"
+                  id="checkpassword"
+                  placeholder="비밀번호 확인"
+                  th:field="*{checkpassword}"
+                  required
+                  oninput="checkpw()"
+          /> <span id="check"></span>
+        </div>
+
+        <div class="col-12">
+          <label for="phone" class="form-label">전화번호</label>
+          <input
+                  type="text"
+                  class="form-control"
+                  id="phone"
+                  placeholder="000-0000-0000"
+                  th:field="*{phone}"
+                  required
+          />
+        </div>
+
+        <div class="col-12">
+          <label for="birthday" class="form-label">생년월일</label>
+          <input
+                  type="text"
+                  class="form-control"
+                  id="birthday"
+                  placeholder="000000(ex:240101)"
+                  th:field="*{birthday}"
+                  required
+          />
+        </div>
+      </div>
+
+
+      <hr class="my-4" />
+      <button class="btn btn-primary w-100 py-2" type="submit">
+        회원가입
+      </button>
+    </form>
+  </main>
+</div>
+
+<script>
+    //비밀번호 일치
+    function checkpw() {
+      var userPW1 = document.getElementById("password").value;
+      var userPW2 = document.getElementById("checkpassword").value;
+      var checkMessage = document.getElementById('check');
+
+      if (userPW1 !== userPW2) {
+        checkMessage.style.color = 'red';
+        checkMessage.innerHTML = '비밀번호가 일치하지 않습니다. 다시 입력해 주세요';
+      } else {
+        checkMessage.style.color = 'darkgreen';
+        checkMessage.innerHTML = '비밀번호가 일치합니다.';
+      }
+    }
+
+    //아이디 확인
+    function idCheck() {
+      var userId = document.getElementById("id").value;
+
+      $.ajax({
+        type: "GET",
+        url: "/member/idCheck/" + userId,
+        success: function (response) {
+          alert(response);
+          document.getElementById("idErrorMessage").style.display = "none";
+        },
+        error: function (error) {
+          document.getElementById("idErrorMessage").style.display = "block";
+        }
+      });
+    };
+</script>
+</body>
+</html>

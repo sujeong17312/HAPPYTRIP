@@ -1,0 +1,62 @@
+        <!Doctype html>
+        <html xmlns:th="http://www.thymeleaf.org">
+        <head>
+            <meta charset="utf-8"/>
+            <title>회원정보 수정</title>
+
+            <!--  CSS-->
+            <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+            <!--  JS-->
+            <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+            <style>
+                /* 전체를 가운데로 이동시키기 위한 스타일 */
+                body, html {
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                /* 글씨와 폼 간격 조정 */
+                .container {
+                    margin-top: 20px;
+                    margin-bottom: 20px;
+                }
+            </style>
+        </head>
+        <body>
+        <div class="container mt-5">
+            <h1 class="mb-4">회원 정보 수정</h1>
+            <form th:action="@{/mypage/update}" method="post">
+                <div class="mb-3">
+                    <label for="name" class="form-label">이름:</label>
+                    <input type="text" class="form-control" id="name" name="name" th:value="${member.name}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="id" class="form-label">아이디:</label>
+                    <input type="text" class="form-control" id="id" name="id" th:value="${member.userId}" readonly>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">비밀번호:</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone" class="form-label">전화번호:</label>
+                    <input type="text" class="form-control" id="phone" name="phone" th:value="${member.phone}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="birthday" class="form-label">생년월일:</label>
+                    <input type="text" class="form-control" id="birthday" name="birthday" th:value="${member.birthday}" readonly>
+                </div>
+
+                <button type="submit" class="btn btn-primary">저장</button>
+            </form>
+        </div>
+        </body>
+        </html>

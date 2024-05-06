@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>공지</title>
+
+    <!--CSS-->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/join.css}" rel="stylesheet" />
+
+    <!--JS-->
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+    <style>
+
+        h4 {
+            padding-top: 30px;;
+            border-bottom: 1px solid #ced4da;
+            padding-bottom: 10px;
+        }
+
+        .board-content {
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<nav th:replace="~{navbar :: navbarFragment}"></nav>
+<div class="container">
+    <h4 th:text="${notice.title}" class="mb-3"></h4>
+    <textarea th:text="${notice.content}" class="board-content form-control mb-3" rows="10"></textarea>
+</div>
+</body>
+</html>

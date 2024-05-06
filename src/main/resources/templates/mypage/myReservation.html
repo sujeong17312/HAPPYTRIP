@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org" xmlns:display="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>예약내역</title>
+
+    <!--  CSS-->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+
+    <!--JS-->
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+    <style>
+        h1 {
+            padding-top: 30px;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .table-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        table {
+            margin: 0 auto;
+        }
+
+        td {
+            vertical-align: middle;
+        }
+
+    </style>
+</head>
+<body>
+<nav th:replace="~{navbar :: navbarFragment}"></nav>
+<div class="container">
+    <h1>예약 내역</h1>
+    <div class="table-container">
+        <form id="deleteForm" method="post">
+            <input type="hidden" id="id" name="id" value="" />
+        </form>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>인원수</th>
+                <th>출발</th>
+                <th>도착</th>
+                <th>항공편</th>
+                <th>출발일시</th>
+                <th>도착일시</th>
+                <th>예약현황</th>
+                <th>취소</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="reservation, loop : ${reservationList}">
+                <td th:text="${reservation.id}" style="display: none;"></td>
+                <td th:text="${loop.count}"></td>
+                <td th:text="${reservation.seatCount}"></td>
+                <td th:text="${reservation.flight.arrival}"></td>
+                <td th:text="${reservation.flight.departure}"></td>
+                <td th:text="${reservation.flight.flightNumber}"></td>
+                <td th:text="${#temporals.format(reservation.flight.arrivalDate, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${#temporals.format(reservation.flight.departureDate, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${reservation.status}"></td>
+                <td>
+                    <button class="btn btn-danger deleteButton">CANCEL</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    document.querySelectorAll('.deleteButton').forEach(button => {
+        button.addEventListener('click', function() {
+            if (confirm("정말로 취소하시겠습니까?")) {
+                var id = this.closest('tr').querySelector('td:first-child').textContent.trim();
+
+                fetch("/mypage/cancelReservation/" + id, {
+                    method: "POST"
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("예약 취소에 실패했습니다.");
+                        }
+                        alert("예약이 성공적으로 취소되었습니다.");
+                        location.reload();
+                    })
+                    .catch(error => {
+                        alert("이미 예약이 취소된 건입니다.");
+                    });
+            }
+        });
+    });
+</script>
+</body>
+</html>

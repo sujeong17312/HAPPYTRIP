@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>관리자</title>
+
+    <!--CSS-->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/join.css}" rel="stylesheet" />
+
+    <!--JS-->
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+    <style>
+        h1 {
+            padding-top: 30px;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        table {
+            margin: 0 auto;
+        }
+
+        td {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+<nav th:replace="~{/admin/adminNavbar :: navbarFragment}"></nav>
+<div class="container">
+    <h1>공지 관리</h1>
+    <div class="row my-3">
+        <div class="col-md-3">
+            <a th:href="@{/admin/notice/create}" class="btn btn-outline-secondary">글 작성</a>
+        </div>
+        <div class="col-md-6"></div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <input type="text" id="search_kw" class="form-control" th:value="${kw}">
+                <button class="btn btn-outline-secondary" type="button" id="btn_search">찾기</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <form id="deleteForm" method="post">
+            <input type="hidden" id="id" name="id" value="" />
+        </form>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>제목</th>
+                <th>내용</th>
+                <th>작성일시</th>
+                <th>삭제</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="notice : ${paging}">
+                <td th:text="${notice.id}" style="display: none;"></td>
+                <td>
+                    <a th:href="@{|/admin/notice/detail/${notice.id}|}" th:text="${notice.title}"></a>
+                </td>
+                <td th:text="${notice.content}"></td>
+                <td th:text="${#temporals.format(notice.lastModifiedDate, 'yyyy-MM-dd HH:mm')}"></td>
+                <td class="delete-button">
+                    <button class="btn btn-danger deleteButton">DELETE</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<nav aria-label="Page navigation example">
+    <div th:if="${!paging.isEmpty()}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
+                <a class="page-link"
+                   href="javascript:void(0)" th:data-page="${paging.number-1}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
+                th:if="${page >= paging.number-2 and page <= paging.number+2}"
+                th:classappend="${page == paging.number} ? 'active'"
+                class="page-item">
+                <a th:text="${page}" class="page-link" href="javascript:void(0)" th:data-page="${page}"></a>
+            </li>
+            <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
+                <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number+1}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<form th:action="@{/admin/notice/list}" method="get" id="searchForm">
+    <input type="hidden" id="kw" name="kw" th:value="${kw}">
+    <input type="hidden" id="page" name="page" th:value="${paging.number}">
+</form>
+
+<script>
+    document.querySelectorAll('.deleteButton').forEach(button => {
+        button.addEventListener('click', function() {
+            if (confirm("정말로 삭제하시겠습니까?")) {
+                var id = this.closest('tr').querySelector('td:first-child').textContent.trim();
+
+                fetch("/admin/deleteNotice/" + id, {
+                    method: "POST"
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("공지 삭제에 실패했습니다.");
+                        }
+                        alert("공지가 성공적으로 삭제되었습니다.");
+                        window.location.href = '/admin/notice/list';
+                    })
+                    .catch(error => {
+                        alert(error.message);
+                    });
+            }
+        });
+    });
+
+    const page_elements = document.getElementsByClassName("page-link");
+    Array.from(page_elements).forEach(function(element) {
+        element.addEventListener('click', function() {
+            document.getElementById('page').value = this.dataset.page;
+            document.getElementById('searchForm').submit();
+        });
+    });
+
+    const btn_search = document.getElementById("btn_search");
+    btn_search.addEventListener('click', function() {
+        document.getElementById('kw').value = document.getElementById('search_kw').value;
+        document.getElementById('page').value = 0;
+        document.getElementById('searchForm').submit();
+    });
+</script>
+</body>
+</html>

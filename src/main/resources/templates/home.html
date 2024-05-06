@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>홈</title>
+
+  <!--  CSS-->
+  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+
+  <!--JS-->
+  <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+  <!--  JQuery-->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  <style>
+
+    .form-container {
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .button {
+      margin-top: 15px;
+    }
+  </style>
+</head>
+
+<body>
+<nav th:replace="~{navbar :: navbarFragment}"></nav>
+<div class="container mt-4">
+  <h1 class="text-center mt-5 mb-4">항공권 조회</h1>
+  <div class="form-container">
+    <form th:action="@{/booking}" th:object="${airForm}" method="post">
+      <div class="form-group">
+        <label for="roundWay">편도/왕복</label>
+        <select id="roundWay" name="roundWay" class="form-control">
+          <option value="" disabled selected>편도/왕복</option>
+          <option value="편도">편도</option>
+          <option value="왕복">왕복</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="departure">출발지:</label>
+        <select id="departure" name="departure" class="form-control">
+          <option value="" disabled selected>출발지</option>
+          <option value="김포">김포</option>
+          <option value="제주">제주</option>
+          <option value="김해">김해</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="arrival">도착지:</label>
+        <select id="arrival" name="arrival" class="form-control">
+          <option value="" disabled selected>도착지</option>
+          <option value="김포">김포</option>
+          <option value="제주">제주</option>
+          <option value="김해">김해</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="departureDate1">출발 날짜:</label>
+        <input type="text" id="departureDate1" name="departureDate1" class="form-control" th:value="${airForm.departureDate1}">
+      </div>
+
+      <div class="form-group">
+        <label for="departureDate2">도착 날짜:</label>
+        <input type="text" id="departureDate2" name="departureDate2" class="form-control" th:value="${airForm.departureDate2}">
+      </div>
+
+      <div class="form-group">
+        <label for="passenger">인원:</label>
+        <select id="passenger" name="passenger" class="form-control">
+          <option value="" disabled selected>인원</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+
+      <button type="submit" class="button btn btn-primary">조회</button>
+    </form>
+  </div>
+</div>
+<script>
+  $(document).ready(function() {
+    $("#departureDate1").datepicker({
+      dateFormat: 'yymmdd'
+    });
+
+    $("#departureDate2").datepicker({
+      dateFormat: 'yymmdd'
+    });
+  });
+</script>
+</body>
+</html>

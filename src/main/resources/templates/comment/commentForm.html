@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>댓글 수정</title>
+
+    <!--CSS-->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/join.css}" rel="stylesheet" />
+
+    <!--JS-->
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <style>
+        h3 {
+            padding-top: 30px;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        label {
+            text-align: left;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<nav th:replace="~{navbar :: navbarFragment}"></nav>
+<div class="container">
+    <h3 class="my-3 border-bottom pb-2">답변 수정</h3>
+    <form th:object="${comment}" method="post">
+        <div class="mb-3">
+            <textarea name="content" id="content" class="form-control" rows="10" th:field="*{content}"></textarea>
+        </div>
+        <input type="submit" value="저장" class="btn btn-secondary">
+    </form>
+</div>
+</body>
+</html>

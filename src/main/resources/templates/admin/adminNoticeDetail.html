@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>관리자</title>
+
+    <!--CSS-->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/join.css}" rel="stylesheet" />
+
+    <!--JS-->
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+    <style>
+
+        h4 {
+            padding-top: 30px;;
+            border-bottom: 1px solid #ced4da;
+            padding-bottom: 10px;
+        }
+
+        .board-content {
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<nav th:replace="~{/admin/adminNavbar :: navbarFragment}"></nav>
+<div class="container">
+    <h4 th:text="${notice.title}" class="mb-3"></h4>
+    <textarea th:text="${notice.content}" class="board-content form-control mb-3" rows="10"></textarea>
+    <div class="my-3 d-flex justify-content-end">
+        <a th:href="@{|/admin/notice/update/${notice.id}|}" class="btn btn-sm btn-outline-primary"
+           th:text="수정"></a>
+        <a href="javascript:void(0);" th:data-uri="@{|/admin/notice/delete/${notice.id}|}"
+           class="delete btn btn-sm btn-outline-danger" th:text="삭제"></a>
+    </div>
+</div>
+
+<script type='text/javascript'>
+    const delete_elements = document.getElementsByClassName("delete");
+    Array.from(delete_elements).forEach(function(element) {
+        element.addEventListener('click', function() {
+            if(confirm("정말로 삭제하시겠습니까?")) {
+                location.href = this.dataset.uri;
+            };
+        });
+    });
+</script>
+</body>
+</html>

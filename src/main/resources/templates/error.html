@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>오류</title>
+
+    <!--  CSS-->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+
+    <!--JS-->
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+    <style>
+        /* 추가적인 스타일링 */
+        body {
+            background-color: #f8f9fa;
+        }
+        .access-denied-container {
+            margin-top: 50px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container access-denied-container">
+    <div class="jumbotron">
+        <h1 class="display-4">접근 거부</h1>
+        <p class="lead">죄송합니다. 해당 페이지에 접근할 수 있는 권한이 없습니다.</p>
+        <hr class="my-4">
+        <a class="btn btn-primary btn-lg" th:href="@{/home}" role="button">홈으로 이동</a>
+    </div>
+</div>
+</body>
+</html>
